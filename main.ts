@@ -61,28 +61,51 @@ namespace pxtlora {
 
     let onReceivedStringHandler: (receivedString: string) => void;
 
-    serial.onDataReceived(serial.delimiters(Delimiters.NewLine), function () {
-        if(e32Pins.config == false)
-        {
-          let str: string = serial.readString()
-          onReceivedStringHandler(str)
-        }
-    })
+//ORIGINAL VERSION
+//    serial.onDataReceived(serial.delimiters(Delimiters.NewLine), function () {
+//        if(e32Pins.config == false)
+//        {
+//          let str: string = serial.readString()
+//          onReceivedStringHandler(str)
+//        }
+//    })
 
+// Safer version, according to chatgpt. 
+serial.onDataReceived(serial.delimiters(Delimiters.NewLine), function () {
+    const str = serial.readString()
+
+    if (e32Pins.config) return
+    if (!onReceivedStringHandler) return
+
+    onReceivedStringHandler(str)
+})
 
 // ==========================================================================
 // Internal Functions
 // ==========================================================================
 
     /**
-     * e32auxTimeout
-     */
+     * e32auxTimeout original version
+    
     function e32auxTimeout(value: number) {
       basic.pause(value)
       if(auxPin() == 0){
         basic.showIcon(IconNames.Angry)
         basic.clearScreen()
       }
+    }
+    */
+
+    /**
+     * e32auxTimeout revised version
+    */
+    function waitAuxHigh(timeoutMs: number): boolean {
+    let start = control.millis()
+    while (auxPin() == 0) {
+        if (control.millis() - start > timeoutMs) return false
+        basic.pause(5)
+    }
+    return true
     }
 
 
