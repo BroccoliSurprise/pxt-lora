@@ -72,12 +72,11 @@ namespace pxtlora {
 
 // Safer version, according to chatgpt. 
 serial.onDataReceived(serial.delimiters(Delimiters.NewLine), function () {
-    const str = serial.readString()
+    let str: string = serial.readString()
 
-    if (e32Pins.config) return
-    if (!onReceivedStringHandler) return
-
-    onReceivedStringHandler(str)
+    if (e32Pins.config == false && onReceivedStringHandler) {
+        onReceivedStringHandler(str)
+    }
 })
 
 // ==========================================================================
@@ -469,4 +468,3 @@ serial.onDataReceived(serial.delimiters(Delimiters.NewLine), function () {
     }
 
 }
-
