@@ -97,7 +97,7 @@ serial.onDataReceived(serial.delimiters(Delimiters.NewLine), function () {
 
     /**
      * e32auxTimeout revised version
-    */
+
     function waitAuxHigh(timeoutMs: number): boolean {
     let start = control.millis()
     while (auxPin() == 0) {
@@ -106,6 +106,27 @@ serial.onDataReceived(serial.delimiters(Delimiters.NewLine), function () {
     }
     return true
     }
+    */
+   
+    /**
+     * e32auxTimeout revised version
+    */
+
+
+function e32auxTimeout(timeoutMs: number) {
+    let start = control.millis()
+    while (auxPin() == 0) {
+        if (control.millis() - start > timeoutMs) {
+            basic.showIcon(IconNames.Angry)
+            basic.clearScreen()
+            return
+        }
+        basic.pause(5)
+    }
+}
+
+
+
 
 
     /**
